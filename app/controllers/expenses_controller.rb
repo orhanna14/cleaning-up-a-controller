@@ -39,24 +39,16 @@ class ExpensesController < ApplicationController
 
   def update
     user = User.find(params[:user_id])
-
     @expense = user.expenses.find(params[:id])
 
-    if !@expense.approved
+    if !@expense.approved?
       @expense.update_attributes!(expense_params)
       flash[:notice] = 'Your expense has been successfully updated'
-      redirect_to user_expenses_path(user_id: user.id)
+      redirect_to user_expenses_path(user)
     else
       flash[:error] = 'You cannot update an approved expense'
       render :edit
     end
-  end
-
-  def approve
-    @expense = Expense.find(params[:expense_id])
-    @expense.update_attributes!(approved: true)
-
-    render :show
   end
 
   def destroy
